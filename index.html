@@ -75,6 +75,10 @@
   </div>
   <div id="courses"></div>
 
+  <h2 class="section">Weekly Series</h2>
+  <p class="section-sub">Free and open to all — no experience needed.</p>
+  <div id="series"></div>
+
   <h2 class="section">Why SKY Works</h2>
   <p class="section-sub">Independent, peer-reviewed research on Sudarshan Kriya (SKY).</p>
   <div id="research"></div>
@@ -93,7 +97,8 @@
    1. Copy this single file (index.html).
    2. Edit the SITE object below (name, tagline, photo, contact).
    3. Replace the COURSES list with your own courses.
-   4. Optionally edit RESEARCH and EXTRA_LINKS.
+   4. Add recurring free series (yoga, meditation) to SERIES.
+   5. Optionally edit RESEARCH and EXTRA_LINKS.
    That's it — no other code changes needed.
    ========================================================================== */
 
@@ -150,6 +155,17 @@ const COURSES = [
     format:"inperson", venue:"436 Costa Mesa Ter Apt A, Sunnyvale, CA 94085",
     price:"$395", wasPrice:"", instructor:"Meganaa Godhala",
     url:"https://tinyurl.com/bp5p78pf" },
+];
+
+/* Recurring free series (meditation, yoga, etc.). Fields:
+   title, schedule, format ("online" | "inperson"),
+   venue ("" for online), detail (join info), url (RSVP link) */
+const SERIES = [
+  { title:"Breathe to Thrive — Free Weekly Meditation Series",
+    schedule:"Every Wednesday · 5:30–6:15 PM PT",
+    format:"online", venue:"",
+    detail:"Virtual — meeting link shared after RSVP",
+    url:"https://tiny.cc/breathewednesdays" },
 ];
 
 /* Research highlights. Keep short: one stat + one line each. */
@@ -223,6 +239,26 @@ RESEARCH.forEach(r=>{
   d.innerHTML = `<div class="stat">${r.stat}</div><h3>${r.title}</h3>
     <p>${r.text} <a href="${r.url}" target="_blank" rel="noopener">Read more</a></p>`;
   researchEl.appendChild(d);
+});
+
+const seriesEl = document.getElementById("series");
+SERIES.forEach(s=>{
+  const badge = s.format==="online"
+    ? `<span class="badge online">Online</span>`
+    : `<span class="badge inperson">In-person</span>`;
+  const venue = s.venue ? `<div><strong>Venue:</strong> ${s.venue}</div>` : "";
+  const card = document.createElement("div");
+  card.className = "course";
+  card.innerHTML =
+    `<div class="course-top"><h3>${s.title}</h3>${badge}</div>
+     <div class="meta">
+       <div><strong>When:</strong> ${s.schedule}</div>
+       ${venue}
+       <div>${s.detail}</div>
+     </div>
+     <div class="price">Free</div>
+     <a class="btn" href="${s.url}" target="_blank" rel="noopener">RSVP</a>`;
+  seriesEl.appendChild(card);
 });
 
 const extraEl = document.getElementById("extra");
