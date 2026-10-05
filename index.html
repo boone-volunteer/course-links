@@ -18,10 +18,6 @@
   header{text-align:center;margin-bottom:28px}
   .avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;margin:0 auto 14px;
     display:block;border:3px solid var(--gold-soft);background:var(--gold-soft)}
-  .avatar-fallback{width:96px;height:96px;border-radius:50%;margin:0 auto 14px;
-    display:flex;align-items:center;justify-content:center;
-    background:var(--gold-soft);color:var(--gold);
-    font-family:Georgia,"Times New Roman",serif;font-size:40px}
   h1{font-family:Georgia,"Times New Roman",serif;font-size:28px;font-weight:700}
   .tagline{color:var(--muted);margin-top:6px;font-size:15px}
   .rule{width:56px;height:3px;background:var(--gold);margin:16px auto 0;border-radius:2px}
@@ -208,11 +204,10 @@ const EXTRA_LINKS = [
 /* ====================  no edits needed below this line  ==================== */
 
 const header = document.getElementById("site-header");
-const initials = SITE.name.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase();
 header.innerHTML =
   (SITE.photo
     ? `<img class="avatar" src="${SITE.photo}" alt="${SITE.name}">`
-    : `<div class="avatar-fallback">${initials}</div>`) +
+    : ``) +
   `<h1>${SITE.name}</h1><p class="tagline">${SITE.tagline}</p><div class="rule"></div>`;
 
 const coursesEl = document.getElementById("courses");
