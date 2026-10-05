@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meganaa Godhala — Art of Living Courses</title>
+<meta name="description" content="Art of Living Part 1 courses (SKY Happiness Retreat) taught by Meganaa Godhala — online and in-person.">
+<style>
+  :root{
+    --cream:#faf6ef; --ink:#1e1a14; --gold:#c9962e; --gold-soft:#f3e7c8;
+    --card:#ffffff; --muted:#6f665a; --line:#e8e0d0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:520px;margin:0 auto;padding:32px 20px 64px}
+  header{text-align:center;margin-bottom:28px}
+  .avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;margin:0 auto 14px;
+    display:block;border:3px solid var(--gold-soft);background:var(--gold-soft)}
+  .avatar-fallback{width:96px;height:96px;border-radius:50%;margin:0 auto 14px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--gold-soft);color:var(--gold);
+    font-family:Georgia,"Times New Roman",serif;font-size:40px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:28px;font-weight:700}
+  .tagline{color:var(--muted);margin-top:6px;font-size:15px}
+  .rule{width:56px;height:3px;background:var(--gold);margin:16px auto 0;border-radius:2px}
+  h2.section{font-family:Georgia,"Times New Roman",serif;font-size:20px;text-align:center;
+    margin:36px 0 4px}
+  .section-sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:18px}
+  .filters{display:flex;gap:8px;justify-content:center;margin-bottom:18px;flex-wrap:wrap}
+  .filters button{border:1px solid var(--line);background:var(--card);color:var(--ink);
+    border-radius:999px;padding:7px 16px;font-size:13px;cursor:pointer}
+  .filters button.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .course{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:18px;margin-bottom:14px}
+  .course-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .course h3{font-size:17px}
+  .badge{flex-shrink:0;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    padding:4px 10px;border-radius:999px}
+  .badge.online{background:#e7f0e4;color:#2f6b33}
+  .badge.inperson{background:var(--gold-soft);color:#8a5f0b}
+  .meta{margin-top:10px;font-size:14px;color:var(--muted)}
+  .meta div{margin-top:4px}
+  .meta strong{color:var(--ink);font-weight:600}
+  .price{font-size:15px;font-weight:700;color:var(--ink);margin-top:10px}
+  .price s{color:var(--muted);font-weight:400;margin-right:8px}
+  .btn{display:block;text-align:center;margin-top:14px;background:var(--ink);color:#fff;
+    text-decoration:none;border-radius:10px;padding:13px;font-weight:700;font-size:15px}
+  .btn:hover{background:#000}
+  .research{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:20px;margin-bottom:14px}
+  .research h3{font-size:16px;margin-bottom:6px}
+  .research p{font-size:14px;color:var(--muted)}
+  .research .stat{font-family:Georgia,serif;font-size:26px;color:var(--gold);font-weight:700}
+  .research a{color:var(--ink);font-weight:600}
+  .extralink{display:block;text-align:center;background:var(--card);border:1px solid var(--line);
+    border-radius:10px;padding:13px;margin-bottom:10px;color:var(--ink);
+    text-decoration:none;font-weight:600;font-size:15px}
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:40px}
+  footer a{color:var(--muted)}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header id="site-header"></header>
+
+  <h2 class="section">Upcoming Courses</h2>
+  <p class="section-sub">Art of Living Part 1 — learn the evidence-based SKY breathing technique from a certified instructor.</p>
+  <div class="filters" id="filters">
+    <button data-f="all" class="active">All</button>
+    <button data-f="online">Online</button>
+    <button data-f="inperson">In-person</button>
+  </div>
+  <div id="courses"></div>
+
+  <h2 class="section">Why SKY Works</h2>
+  <p class="section-sub">Independent, peer-reviewed research on Sudarshan Kriya (SKY).</p>
+  <div id="research"></div>
+
+  <h2 class="section">Connect</h2>
+  <div id="extra"></div>
+
+  <footer id="site-footer"></footer>
+</div>
+
+<script>
+/* ============================================================================
+   ★★★  EDIT ONLY THIS CONFIG BLOCK TO MAKE YOUR OWN PAGE  ★★★
+   ----------------------------------------------------------------------------
+   To replicate this page for another teacher:
+   1. Copy this single file (index.html).
+   2. Edit the SITE object below (name, tagline, photo, contact).
+   3. Replace the COURSES list with your own courses.
+   4. Optionally edit RESEARCH and EXTRA_LINKS.
+   That's it — no other code changes needed.
+   ========================================================================== */
+
+const SITE = {
+  name: "Meganaa Godhala",
+  tagline: "Art of Living Teacher · Bay Area",
+  photo: "",              // optional: paste an image URL here, or leave "" for initials
+  contactEmail: "meganaa.reddy@artofliving.org",
+  contactPhone: "+1 4708964207",
+};
+
+/* One entry per course. Fields:
+   title, dates, times, format ("online" | "inperson"),
+   venue ("" for online), price, wasPrice ("" if no discount),
+   instructor, url */
+const COURSES = [
+  { title:"Art of Living Part 1", dates:"Oct 9 – 11, 2026",
+    times:"Fri 9:00–9:30 PM ET · Sat & Sun 9:00–11:30 AM ET",
+    format:"online", venue:"", price:"$295", wasPrice:"$395",
+    instructor:"Meganaa Godhala", url:"https://tinyurl.com/4b9t7ech" },
+  { title:"Art of Living Part 1", dates:"Oct 9 – 11, 2026",
+    times:"Fri 6:00–9:00 PM PT · Sat & Sun 9:00 AM–12:00 PM PT",
+    format:"inperson", venue:"436 Costa Mesa Ter Apt A, Sunnyvale, CA 94085",
+    price:"$395", wasPrice:"", instructor:"Mugdha Abhyankar, Meganaa Godhala",
+    url:"https://tinyurl.com/bddes8ma" },
+  { title:"Art of Living Part 1", dates:"Oct 16 – 18, 2026",
+    times:"Fri 6:00–8:30 PM CT · Sat & Sun 9:00–11:30 AM CT",
+    format:"online", venue:"", price:"$295", wasPrice:"$395",
+    instructor:"Meganaa Godhala", url:"https://tinyurl.com/3yuvu4mj" },
+  { title:"Art of Living Part 1", dates:"Oct 23 – 25, 2026",
+    times:"Fri 6:00–8:30 PM PT · Sat & Sun 9:00–11:30 AM PT",
+    format:"online", venue:"", price:"$295", wasPrice:"$395",
+    instructor:"Meganaa Godhala", url:"https://tinyurl.com/e2ej6a3k" },
+  { title:"Art of Living Part 1", dates:"Oct 30 – Nov 1, 2026",
+    times:"Fri 7:00–9:30 PM CT · Sat & Sun 10:00 AM–12:30 PM CT",
+    format:"online", venue:"", price:"$295", wasPrice:"$395",
+    instructor:"Meganaa Godhala", url:"https://tinyurl.com/32bj4amz" },
+  { title:"Art of Living Part 1", dates:"Nov 6 – 8, 2026",
+    times:"Fri 6:00–9:00 PM PT · Sat & Sun 9:00 AM–12:00 PM PT",
+    format:"inperson", venue:"436 Costa Mesa Ter Apt A, Sunnyvale, CA 94085",
+    price:"$395", wasPrice:"", instructor:"Meganaa Godhala",
+    url:"https://tinyurl.com/4vpzx9v6" },
+  { title:"Art of Living Part 1", dates:"Nov 13 – 15, 2026",
+    times:"Fri 6:00–8:30 PM PT · Sat & Sun 9:00 AM–11:30 AM PT",
+    format:"online", venue:"", price:"$295", wasPrice:"$395",
+    instructor:"Meganaa Godhala", url:"https://tinyurl.com/yc34yaf3" },
+  { title:"Art of Living Part 1", dates:"Nov 27 – 29, 2026",
+    times:"Fri 6:00–9:00 PM PT · Sat & Sun 9:00 AM–12:00 PM PT",
+    format:"inperson", venue:"436 Costa Mesa Ter Apt A, Sunnyvale, CA 94085",
+    price:"$395", wasPrice:"", instructor:"Meganaa Godhala",
+    url:"https://tinyurl.com/475jku4y" },
+  { title:"Art of Living Part 1", dates:"Dec 4 – 6, 2026",
+    times:"Fri 5:30–8:30 PM PT · Sat & Sun 8:30–11:30 AM PT",
+    format:"inperson", venue:"436 Costa Mesa Ter Apt A, Sunnyvale, CA 94085",
+    price:"$395", wasPrice:"", instructor:"Meganaa Godhala",
+    url:"https://tinyurl.com/bp5p78pf" },
+];
+
+/* Research highlights. Keep short: one stat + one line each. */
+const RESEARCH = [
+  { stat:"100+", title:"Independent studies",
+    text:"Peer-reviewed studies across four continents on Sudarshan Kriya (SKY) and related breathing practices.",
+    url:"https://www.artofliving.org/bg-en/about-us/sudarshan-kriya" },
+  { stat:"70%", title:"Depression remission",
+    text:"Remission rate within one month in published studies on SKY for depression.",
+    url:"https://www.artofliving.org.my/research-on-sudarshan-kriya-for-depression/" },
+  { stat:"56%", title:"Less stress hormone",
+    text:"Reduction in serum cortisol, the body's primary stress hormone.",
+    url:"https://www.artofliving.org/bg-en/about-us/sudarshan-kriya" },
+  { stat:"218%", title:"More deep sleep",
+    text:"Increase in deep sleep reported by regular SKY practitioners.",
+    url:"https://www.artofliving.org/bg-en/about-us/sudarshan-kriya" },
+];
+
+/* Extra buttons under "Connect": socials, WhatsApp groups, etc. */
+const EXTRA_LINKS = [
+  { label:"Instagram — @stretchandsmilebayarea", url:"https://www.instagram.com/stretchandsmilebayarea/" },
+];
+
+/* ====================  no edits needed below this line  ==================== */
+
+const header = document.getElementById("site-header");
+const initials = SITE.name.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase();
+header.innerHTML =
+  (SITE.photo
+    ? `<img class="avatar" src="${SITE.photo}" alt="${SITE.name}">`
+    : `<div class="avatar-fallback">${initials}</div>`) +
+  `<h1>${SITE.name}</h1><p class="tagline">${SITE.tagline}</p><div class="rule"></div>`;
+
+const coursesEl = document.getElementById("courses");
+function renderCourses(filter){
+  coursesEl.innerHTML = "";
+  COURSES.filter(c => filter==="all" || c.format===filter).forEach(c=>{
+    const badge = c.format==="online"
+      ? `<span class="badge online">Online</span>`
+      : `<span class="badge inperson">In-person</span>`;
+    const venue = c.venue ? `<div><strong>Venue:</strong> ${c.venue}</div>` : "";
+    const was = c.wasPrice ? `<s>${c.wasPrice}</s>` : "";
+    const card = document.createElement("div");
+    card.className = "course";
+    card.innerHTML =
+      `<div class="course-top"><h3>${c.title}</h3>${badge}</div>
+       <div class="meta">
+         <div><strong>Dates:</strong> ${c.dates}</div>
+         <div><strong>Time:</strong> ${c.times}</div>
+         ${venue}
+         <div><strong>Instructor:</strong> ${c.instructor}</div>
+       </div>
+       <div class="price">${was}${c.price}</div>
+       <a class="btn" href="${c.url}" target="_blank" rel="noopener">Register</a>`;
+    coursesEl.appendChild(card);
+  });
+}
+renderCourses("all");
+document.querySelectorAll("#filters button").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll("#filters button").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    renderCourses(b.dataset.f);
+  });
+});
+
+const researchEl = document.getElementById("research");
+RESEARCH.forEach(r=>{
+  const d = document.createElement("div");
+  d.className = "research";
+  d.innerHTML = `<div class="stat">${r.stat}</div><h3>${r.title}</h3>
+    <p>${r.text} <a href="${r.url}" target="_blank" rel="noopener">Read more</a></p>`;
+  researchEl.appendChild(d);
+});
+
+const extraEl = document.getElementById("extra");
+EXTRA_LINKS.forEach(l=>{
+  const a = document.createElement("a");
+  a.className = "extralink"; a.href = l.url;
+  a.target = "_blank"; a.rel = "noopener"; a.textContent = l.label;
+  extraEl.appendChild(a);
+});
+
+document.getElementById("site-footer").innerHTML =
+  `Questions? <a href="mailto:${SITE.contactEmail}">${SITE.contactEmail}</a> · ${SITE.contactPhone}`;
+</script>
+</body>
+</html>
