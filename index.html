@@ -82,6 +82,7 @@
 
   <h2 class="section">Why SKY Works</h2>
   <p class="section-sub">Independent, peer-reviewed research on Sudarshan Kriya (SKY).</p>
+  <div id="sky-intro"></div>
   <div id="research"></div>
 
   <h2 class="section">Connect</h2>
@@ -102,7 +103,8 @@
    2. Edit the SITE object below (name, tagline, photo, contact).
    3. Replace the COURSES list with your own courses.
    4. Add recurring free series (yoga, meditation) to SERIES.
-   5. Optionally edit RESEARCH and EXTRA_LINKS.
+   5. Edit SKY_INTRO for the SKY description and featured research video.
+   6. Optionally edit RESEARCH and EXTRA_LINKS.
    That's it — no other code changes needed.
    ========================================================================== */
 
@@ -172,6 +174,15 @@ const SERIES = [
     url:"https://tiny.cc/breathewednesdays" },
 ];
 
+/* SKY intro: short description + featured research video shown on top. */
+const SKY_INTRO = {
+  intro: "SKY Breath Meditation (Sudarshan Kriya) is an evidence-based rhythmic breathing technique studied in 100+ peer-reviewed studies at institutions including Yale, Stanford, and the University of Wisconsin.",
+  videoTitle: "Yale Study: SKY on Student Stress & Burnout",
+  videoDesc: "A 2020 Yale University study — an 8-week randomized trial with 200 students — found SKY significantly reduced stress, anxiety, depression, and burnout.",
+  videoUrl: "https://www.youtube.com/watch?v=kAy_ud1MJEY",
+  researchUrl: "https://www.artofliving.org/us-en/meditation/benefits/research-sudarshan-kriya",
+};
+
 /* Research highlights. Keep short: one stat + one line each. */
 const RESEARCH = [
   { stat:"100+", title:"Independent studies",
@@ -233,6 +244,16 @@ document.querySelectorAll("#filters button").forEach(b=>{
     renderCourses(b.dataset.f);
   });
 });
+
+const skyIntroEl = document.getElementById("sky-intro");
+skyIntroEl.innerHTML =
+  `<div class="research">
+     <p>${SKY_INTRO.intro}</p>
+     <h3 style="margin-top:14px">${SKY_INTRO.videoTitle}</h3>
+     <p>${SKY_INTRO.videoDesc}</p>
+     <a class="btn" href="${SKY_INTRO.videoUrl}" target="_blank" rel="noopener">▶ Watch the Yale Research Video</a>
+     <p style="margin-top:10px"><a href="${SKY_INTRO.researchUrl}" target="_blank" rel="noopener">Explore 100+ SKY research studies</a></p>
+   </div>`;
 
 const researchEl = document.getElementById("research");
 RESEARCH.forEach(r=>{

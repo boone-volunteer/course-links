@@ -10,6 +10,7 @@ A free, Linktree-style links page for Art of Living teachers — no subscription
    - `COURSES` — your course list. One entry per course:
      `title, dates, times, format ("online" | "inperson"), venue, price, wasPrice, instructor, url`.
    - `SERIES` — recurring free series (weekly meditation, yoga, etc.).
+   - `SKY_INTRO` — SKY description and featured research video.
    - `RESEARCH` — your research highlights (optional).
    - `EXTRA_LINKS` — socials, WhatsApp groups, anything else (optional).
 3. Commit and push. GitHub Pages serves it automatically.
