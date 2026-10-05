@@ -87,6 +87,9 @@
   <h2 class="section">Connect</h2>
   <div id="extra"></div>
 
+  <h2 class="section">Free Wellness Workshops</h2>
+  <div id="workshop"></div>
+
   <footer id="site-footer"></footer>
 </div>
 
@@ -270,6 +273,12 @@ EXTRA_LINKS.forEach(l=>{
 
 document.getElementById("site-footer").innerHTML =
   `Questions? <a href="mailto:${SITE.contactEmail}">${SITE.contactEmail}</a> · ${SITE.contactPhone}`;
+
+document.getElementById("workshop").innerHTML =
+  `<div class="course" style="text-align:center">
+     <p style="font-size:15px">Want a <strong>free 60-minute wellness workshop</strong> for your colleagues, family, or community?</p>
+     <a class="btn" href="mailto:${SITE.contactEmail}">Reach out to Meganaa</a>
+   </div>`;
 </script>
 </body>
 </html>
