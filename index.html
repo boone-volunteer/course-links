@@ -28,6 +28,7 @@
   .filters button{border:1px solid var(--line);background:var(--card);color:var(--ink);
     border-radius:999px;padding:7px 16px;font-size:13px;cursor:pointer}
   .filters button.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .filter-label{align-self:center;font-size:13px;color:var(--ink);opacity:.7}
   .course{background:var(--card);border:1px solid var(--line);border-radius:14px;
     padding:18px;margin-bottom:14px}
   .course-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
@@ -76,6 +77,13 @@
     <button data-f="online">Online</button>
     <button data-f="inperson">In-person</button>
   </div>
+  <div class="filters" id="tzfilters">
+    <span class="filter-label">Timezone:</span>
+    <button data-tz="all" class="active">All</button>
+    <button data-tz="PT">PT</button>
+    <button data-tz="CT">CT</button>
+    <button data-tz="ET">ET</button>
+  </div>
   <div id="courses"></div>
   <div id="alt-dates"></div>
 
@@ -121,33 +129,33 @@ const SITE = {
 const COURSES = [
   { title:"Art of Living Part 1", dates:"Oct 16 – 18, 2026",
     times:"Fri 6:00–8:30 PM CT · Sat & Sun 9:00–11:30 AM CT",
-    format:"online", venue:"", price:"$295", wasPrice:"$395",
+    tz:"CT", format:"online", venue:"", price:"$295", wasPrice:"$395",
     instructor:"Meganaa Godhala", url:"https://tinyurl.com/3yuvu4mj" },
   { title:"Art of Living Part 1", dates:"Oct 23 – 25, 2026",
     times:"Fri 6:00–8:30 PM PT · Sat & Sun 9:00–11:30 AM PT",
-    format:"online", venue:"", price:"$295", wasPrice:"$395",
+    tz:"PT", format:"online", venue:"", price:"$295", wasPrice:"$395",
     instructor:"Meganaa Godhala", url:"https://tinyurl.com/e2ej6a3k" },
   { title:"Art of Living Part 1", dates:"Oct 30 – Nov 1, 2026",
     times:"Fri 7:00–9:30 PM CT · Sat & Sun 10:00 AM–12:30 PM CT",
-    format:"online", venue:"", price:"$295", wasPrice:"$395",
+    tz:"CT", format:"online", venue:"", price:"$295", wasPrice:"$395",
     instructor:"Meganaa Godhala", url:"https://tinyurl.com/32bj4amz" },
   { title:"Art of Living Part 1", dates:"Nov 6 – 8, 2026",
     times:"Fri 6:00–9:00 PM PT · Sat & Sun 9:00 AM–12:00 PM PT",
-    format:"inperson", venue:"Sunnyvale, California",
+    tz:"PT", format:"inperson", venue:"Sunnyvale, California",
     price:"$395", wasPrice:"", instructor:"Meganaa Godhala",
     url:"https://tinyurl.com/4vpzx9v6" },
   { title:"Art of Living Part 1", dates:"Nov 13 – 15, 2026",
     times:"Fri 6:00–8:30 PM PT · Sat & Sun 9:00 AM–11:30 AM PT",
-    format:"online", venue:"", price:"$295", wasPrice:"$395",
+    tz:"PT", format:"online", venue:"", price:"$295", wasPrice:"$395",
     instructor:"Meganaa Godhala", url:"https://tinyurl.com/yc34yaf3" },
   { title:"Art of Living Part 1", dates:"Nov 27 – 29, 2026",
     times:"Fri 6:00–9:00 PM PT · Sat & Sun 9:00 AM–12:00 PM PT",
-    format:"inperson", venue:"Sunnyvale, California",
+    tz:"PT", format:"inperson", venue:"Sunnyvale, California",
     price:"$395", wasPrice:"", instructor:"Meganaa Godhala",
     url:"https://tinyurl.com/475jku4y" },
   { title:"Art of Living Part 1", dates:"Dec 4 – 6, 2026",
     times:"Fri 5:30–8:30 PM PT · Sat & Sun 8:30–11:30 AM PT",
-    format:"inperson", venue:"Sunnyvale, California",
+    tz:"PT", format:"inperson", venue:"Sunnyvale, California",
     price:"$395", wasPrice:"", instructor:"Meganaa Godhala",
     url:"https://tinyurl.com/bp5p78pf" },
 ];
@@ -203,9 +211,17 @@ header.innerHTML =
   `<h1>${SITE.name}</h1><p class="tagline">${SITE.tagline}</p><div class="rule"></div>`;
 
 const coursesEl = document.getElementById("courses");
-function renderCourses(filter){
+let formatFilter = "all", tzFilter = "all";
+function renderCourses(){
   coursesEl.innerHTML = "";
-  COURSES.filter(c => filter==="all" || c.format===filter).forEach(c=>{
+  const list = COURSES.filter(c =>
+    (formatFilter==="all" || c.format===formatFilter) &&
+    (tzFilter==="all" || c.tz===tzFilter));
+  if(!list.length){
+    coursesEl.innerHTML = `<p class="section-sub">No courses match — try another combination.</p>`;
+    return;
+  }
+  list.forEach(c=>{
     const badge = c.format==="online"
       ? `<span class="badge online">Online</span>`
       : `<span class="badge inperson">In-person</span>`;
@@ -223,12 +239,21 @@ function renderCourses(filter){
     coursesEl.appendChild(card);
   });
 }
-renderCourses("all");
+renderCourses();
 document.querySelectorAll("#filters button").forEach(b=>{
   b.addEventListener("click", ()=>{
     document.querySelectorAll("#filters button").forEach(x=>x.classList.remove("active"));
     b.classList.add("active");
-    renderCourses(b.dataset.f);
+    formatFilter = b.dataset.f;
+    renderCourses();
+  });
+});
+document.querySelectorAll("#tzfilters button").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll("#tzfilters button").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    tzFilter = b.dataset.tz;
+    renderCourses();
   });
 });
 
