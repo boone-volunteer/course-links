@@ -77,10 +77,10 @@
     <button data-f="online">Online</button>
     <button data-f="inperson">In-person</button>
   </div>
-  <div class="filters" id="tzfilters">
-    <span class="filter-label">Timezone:</span>
-    <button data-tz="all" class="active">All</button>
-    <button data-tz="PT">PT</button>
+  <div class="filters" id="tzselect">
+    <span class="filter-label">Show times in:</span>
+    <button data-tz="PT" class="active">PT</button>
+    <button data-tz="MT">MT</button>
     <button data-tz="CT">CT</button>
     <button data-tz="ET">ET</button>
   </div>
@@ -128,34 +128,41 @@ const SITE = {
    instructor, url */
 const COURSES = [
   { title:"Art of Living Part 1", dates:"Oct 16 – 18, 2026",
-    times:"Fri 6:00–8:30 PM CT · Sat & Sun 9:00–11:30 AM CT",
-    tz:"CT", format:"online", venue:"", price:"$295", wasPrice:"$395",
+    tz:"CT", friDate:[2026,10,16],
+    sessions:[["Fri","6:00 PM","8:30 PM"],["Sat & Sun","9:00 AM","11:30 AM"]],
+    format:"online", venue:"", price:"$295", wasPrice:"$395",
     instructor:"Meganaa Godhala", url:"https://tinyurl.com/3yuvu4mj" },
   { title:"Art of Living Part 1", dates:"Oct 23 – 25, 2026",
-    times:"Fri 6:00–8:30 PM PT · Sat & Sun 9:00–11:30 AM PT",
-    tz:"PT", format:"online", venue:"", price:"$295", wasPrice:"$395",
+    tz:"PT", friDate:[2026,10,23],
+    sessions:[["Fri","6:00 PM","8:30 PM"],["Sat & Sun","9:00 AM","11:30 AM"]],
+    format:"online", venue:"", price:"$295", wasPrice:"$395",
     instructor:"Meganaa Godhala", url:"https://tinyurl.com/e2ej6a3k" },
   { title:"Art of Living Part 1", dates:"Oct 30 – Nov 1, 2026",
-    times:"Fri 7:00–9:30 PM CT · Sat & Sun 10:00 AM–12:30 PM CT",
-    tz:"CT", format:"online", venue:"", price:"$295", wasPrice:"$395",
+    tz:"CT", friDate:[2026,10,30],
+    sessions:[["Fri","7:00 PM","9:30 PM"],["Sat & Sun","10:00 AM","12:30 PM"]],
+    format:"online", venue:"", price:"$295", wasPrice:"$395",
     instructor:"Meganaa Godhala", url:"https://tinyurl.com/32bj4amz" },
   { title:"Art of Living Part 1", dates:"Nov 6 – 8, 2026",
-    times:"Fri 6:00–9:00 PM PT · Sat & Sun 9:00 AM–12:00 PM PT",
-    tz:"PT", format:"inperson", venue:"Sunnyvale, California",
+    tz:"PT", friDate:[2026,11,6],
+    sessions:[["Fri","6:00 PM","9:00 PM"],["Sat & Sun","9:00 AM","12:00 PM"]],
+    format:"inperson", venue:"Sunnyvale, California",
     price:"$395", wasPrice:"", instructor:"Meganaa Godhala",
     url:"https://tinyurl.com/4vpzx9v6" },
   { title:"Art of Living Part 1", dates:"Nov 13 – 15, 2026",
-    times:"Fri 6:00–8:30 PM PT · Sat & Sun 9:00 AM–11:30 AM PT",
-    tz:"PT", format:"online", venue:"", price:"$295", wasPrice:"$395",
+    tz:"PT", friDate:[2026,11,13],
+    sessions:[["Fri","6:00 PM","8:30 PM"],["Sat & Sun","9:00 AM","11:30 AM"]],
+    format:"online", venue:"", price:"$295", wasPrice:"$395",
     instructor:"Meganaa Godhala", url:"https://tinyurl.com/yc34yaf3" },
   { title:"Art of Living Part 1", dates:"Nov 27 – 29, 2026",
-    times:"Fri 6:00–9:00 PM PT · Sat & Sun 9:00 AM–12:00 PM PT",
-    tz:"PT", format:"inperson", venue:"Sunnyvale, California",
+    tz:"PT", friDate:[2026,11,27],
+    sessions:[["Fri","6:00 PM","9:00 PM"],["Sat & Sun","9:00 AM","12:00 PM"]],
+    format:"inperson", venue:"Sunnyvale, California",
     price:"$395", wasPrice:"", instructor:"Meganaa Godhala",
     url:"https://tinyurl.com/475jku4y" },
   { title:"Art of Living Part 1", dates:"Dec 4 – 6, 2026",
-    times:"Fri 5:30–8:30 PM PT · Sat & Sun 8:30–11:30 AM PT",
-    tz:"PT", format:"inperson", venue:"Sunnyvale, California",
+    tz:"PT", friDate:[2026,12,4],
+    sessions:[["Fri","5:30 PM","8:30 PM"],["Sat & Sun","8:30 AM","11:30 AM"]],
+    format:"inperson", venue:"Sunnyvale, California",
     price:"$395", wasPrice:"", instructor:"Meganaa Godhala",
     url:"https://tinyurl.com/bp5p78pf" },
 ];
@@ -211,12 +218,41 @@ header.innerHTML =
   `<h1>${SITE.name}</h1><p class="tagline">${SITE.tagline}</p><div class="rule"></div>`;
 
 const coursesEl = document.getElementById("courses");
-let formatFilter = "all", tzFilter = "all";
+let formatFilter = "all", displayTz = "PT";
+
+// US DST 2026: Mar 8 – Nov 1. Returns UTC offset for a US timezone on a date.
+function tzOffset(tz, y, m, d){
+  const std = {PT:-8, MT:-7, CT:-6, ET:-5};
+  const daylight = {PT:-7, MT:-6, CT:-5, ET:-4};
+  const isDst = (m > 3 || (m === 3 && d >= 8)) && m < 11;
+  return (isDst ? daylight : std)[tz];
+}
+function toMinutes(t){
+  const m = t.match(/(\d+):(\d+)\s*(AM|PM)/i);
+  let h = (+m[1]) % 12; if(/pm/i.test(m[3])) h += 12;
+  return h * 60 + (+m[2]);
+}
+function fmtTime(mins){
+  mins = ((mins % 1440) + 1440) % 1440;
+  let h = Math.floor(mins / 60); const m = mins % 60;
+  const ap = h >= 12 ? "PM" : "AM"; h = h % 12 || 12;
+  return h + ":" + String(m).padStart(2, "0") + " " + ap;
+}
+// Convert a course's session times from its base tz into the visitor's tz.
+function courseTimes(course, targetTz){
+  const dayOff = {Fri:0, Sat:1, Sun:2};
+  const [y, mo, friD] = course.friDate;
+  return course.sessions.map(([label, start, end]) => {
+    const firstDay = label.split(" ")[0];
+    const dt = new Date(y, mo - 1, friD + (dayOff[firstDay] || 0));
+    const delta = (tzOffset(targetTz, dt.getFullYear(), dt.getMonth() + 1, dt.getDate())
+                 - tzOffset(course.tz, dt.getFullYear(), dt.getMonth() + 1, dt.getDate())) * 60;
+    return label + " " + fmtTime(toMinutes(start) + delta) + "–" + fmtTime(toMinutes(end) + delta) + " " + targetTz;
+  }).join(" · ");
+}
 function renderCourses(){
   coursesEl.innerHTML = "";
-  const list = COURSES.filter(c =>
-    (formatFilter==="all" || c.format===formatFilter) &&
-    (tzFilter==="all" || c.tz===tzFilter));
+  const list = COURSES.filter(c => formatFilter==="all" || c.format===formatFilter);
   if(!list.length){
     coursesEl.innerHTML = `<p class="section-sub">No courses match — try another combination.</p>`;
     return;
@@ -232,7 +268,7 @@ function renderCourses(){
       `<div class="course-top"><h3>${c.title}</h3>${badge}</div>
        <div class="meta">
          <div><strong>Dates:</strong> ${c.dates}</div>
-         <div><strong>Time:</strong> ${c.times}</div>
+         <div><strong>Time:</strong> ${courseTimes(c, displayTz)}</div>
          ${venue}
        </div>
        <a class="btn" href="${c.url}" target="_blank" rel="noopener">Register</a>`;
@@ -248,11 +284,11 @@ document.querySelectorAll("#filters button").forEach(b=>{
     renderCourses();
   });
 });
-document.querySelectorAll("#tzfilters button").forEach(b=>{
+document.querySelectorAll("#tzselect button").forEach(b=>{
   b.addEventListener("click", ()=>{
-    document.querySelectorAll("#tzfilters button").forEach(x=>x.classList.remove("active"));
+    document.querySelectorAll("#tzselect button").forEach(x=>x.classList.remove("active"));
     b.classList.add("active");
-    tzFilter = b.dataset.tz;
+    displayTz = b.dataset.tz;
     renderCourses();
   });
 });
